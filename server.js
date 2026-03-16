@@ -8,7 +8,7 @@ app.use(express.json());
 
 // Sostituisci con i dati che trovi in Project Settings -> API su Supabase
 const supabaseUrl = 'https://supabase.com/dashboard/project/exnxsxswtspnygdbimxc/settings/general';
-const supabaseKey = 'exnxsxswtspnygdbimxc';
+const supabaseKey = 'sb_publishable_DuGHSJx7YURPLlx9Bsj6cA_29A7sSJe';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // ESEMPIO: Ottenere i prodotti (Robustezza: gestione errori inclusa)
@@ -51,6 +51,6 @@ async function seedDatabase() {
     if (error) console.log("Errore seed:", error);
     else console.log("✅ Prodotti iniziali caricati!");
 }
+seedDatabase();
 
-// Chiamala una volta sola e poi commentala
-// seedDatabase();
+

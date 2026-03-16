@@ -1,56 +1,36 @@
-const { createClient } = require('@supabase/supabase-js');
 const express = require('express');
 const cors = require('cors');
-const app = express();
+const { createClient } = require('@supabase/supabase-js');
 
-app.use(cors());
+const app = express();
+app.use(cors()); 
 app.use(express.json());
 
-// Sostituisci con i dati che trovi in Project Settings -> API su Supabase
-const supabaseUrl = 'https://supabase.com/dashboard/project/exnxsxswtspnygdbimxc/settings/general';
-const supabaseKey = 'sb_publishable_DuGHSJx7YURPLlx9Bsj6cA_29A7sSJe';
+// CONFIGURAZIONE SUPABASE
+const supabaseUrl = 'https://exnxsxswtspnygdbimxc.supabase.co';
+// !!! METTI QUI LA TUA CHIAVE ANON PUBLIC DI SUPABASE !!!
+const supabaseKey = 'sb_publishable_DuGHSJx7YURPLlx9Bsj6cA_29A7sSJe'; 
+
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-// ESEMPIO: Ottenere i prodotti (Robustezza: gestione errori inclusa)
+// ROTTE
 app.get('/api/products', async (req, res) => {
     const { data, error } = await supabase.from('products').select('*');
-    if (error) return res.status(500).json({ error: error.message });
+    if (error) return res.status(500).json(error);
     res.json(data);
 });
 
-// ESEMPIO: Acquistare un prodotto (Sicurezza: controlli "under the hood")
-app.post('/api/buy', async (req, res) => {
-    const { userId, productId } = req.body;
+app.post('/api/admin/products', async (req, res) => {
+    const { name, price, stock } = req.body;
+    const { data, error } = await supabase.from('products').insert([{ name, price, stock }]);
+    if (error) return res.status(500).json(error);
+    res.json({ message: "Prodotto aggiunto!", data });
+});
 
-    // 1. Recupera prodotto e utente da Supabase
-    const { data: product } = await supabase.from('products').select('*').eq('id', productId).single();
-    const { data: user } = await supabase.from('users').select('*').eq('id', userId).single();
-
-    // 2. Controllo Robustezza
-    if (product.stock <= 0) return res.status(400).json({ error: "Esaurito!" });
-    if (user.credits < product.price) return res.status(400).json({ error: "Crediti insufficienti!" });
-
-    // 3. Esegui l'operazione (Logica del database)
-    await supabase.from('products').update({ stock: product.stock - 1 }).eq('id', productId);
-    await supabase.from('users').update({ credits: user.credits - product.price }).eq('id', userId);
-
-    res.json({ message: "Acquisto completato!" });
+app.post('/api/admin/bonus', (req, res) => {
+    const { amount } = req.body;
+    res.json({ message: `Assegnati ${amount} crediti bonus!` });
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 Server pronto sulla porta ${PORT}`));
-async function seedDatabase() {
-    const { data, error } = await supabase
-        .from('products')
-        .insert([
-            { name: 'Laptop Pro', price: 1200, stock: 5 },
-            { name: 'Smartphone Plus', price: 800, stock: 10 },
-            { name: 'Cuffie Wireless', price: 150, stock: 20 }
-        ]);
-    
-    if (error) console.log("Errore seed:", error);
-    else console.log("✅ Prodotti iniziali caricati!");
-}
-seedDatabase();
-
-
+app.listen(PORT, () => console.log(`Server acceso sulla porta ${PORT}`));

@@ -9,7 +9,7 @@ app.use(express.json());
 // CONFIGURAZIONE SUPABASE
 const supabaseUrl = 'https://exnxsxswtspnygdbimxc.supabase.co';
 // !!! METTI QUI LA TUA CHIAVE ANON PUBLIC DI SUPABASE !!!
-const supabaseKey = 'sb_publishable_DuGHSJx7YURPLlx9Bsj6cA_29A7sSJe'; 
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4bnhzeHN3dHNwbnlnZGJpbXhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2MDk1MjEsImV4cCI6MjA4OTE4NTUyMX0.igOa96NnVH4SwImMi_ev8gx2BBzI57EMCRpnSAYjlp8'; 
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
